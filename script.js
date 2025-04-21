@@ -53,8 +53,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const titleLetters = document.querySelectorAll('.title-letter');
         const originalLetters = Array.from(titleLetters).map(el => el.textContent);
         const originalWidths = Array.from(titleLetters).map(el => el.offsetWidth);
+        const originalFont = window.getComputedStyle(titleLetters[0]).fontFamily;
         const possibleLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?';
         const animationIntervals = {};
+        
+        // Array of 30 different fonts to cycle through, including 15 wacky/decorative ones
+        const fontOptions = [
+            // Original 15 fonts
+            "'Montserrat', sans-serif",
+            "'Arial Black', sans-serif",
+            "'Impact', sans-serif",
+            "'Verdana', sans-serif",
+            "'Georgia', serif",
+            "'Courier New', monospace",
+            "'Trebuchet MS', sans-serif",
+            "'Palatino Linotype', serif",
+            "'Lucida Console', monospace",
+            "'Tahoma', sans-serif",
+            "'Segoe UI', sans-serif",
+            "'Times New Roman', serif",
+            "'Century Gothic', sans-serif",
+            "'Copperplate', fantasy",
+            "'Helvetica', sans-serif",
+            
+            // 15 more wacky/decorative fonts
+            "'Comic Sans MS', cursive",
+            "'Brush Script MT', cursive",
+            "'Papyrus', fantasy",
+            "'Chiller', fantasy",
+            "'Jokerman', fantasy",
+            "'Stencil', fantasy",
+            "'Broadway', fantasy",
+            "'Ravie', fantasy",
+            "'Showcard Gothic', fantasy",
+            "'Harrington', fantasy",
+            "'Curlz MT', cursive",
+            "'Lucida Handwriting', cursive",
+            "'Kristen ITC', cursive",
+            "'Freestyle Script', cursive",
+            "'Gigi', fantasy"
+        ];
         
         // Create a measurement div for calculating letter widths
         const measureDiv = document.createElement('div');
@@ -71,8 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(measureDiv);
         
         titleLetters.forEach((letter, index) => {
-            // Store original width
+            // Store original width and font
             letter.dataset.originalWidth = originalWidths[index];
+            letter.dataset.originalFont = originalFont;
             
             letter.addEventListener('mouseenter', () => {
                 startLetterAnimation(letter, index);
@@ -92,19 +131,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(animationIntervals[index]);
             }
             
-            // Set an interval to change the letter randomly
+            // Get the current letter text
+            const currentLetter = letterElement.textContent;
+            
+            // Add an initial random color to prevent flicker
+            const initialRandomColorNum = Math.floor(Math.random() * 30) + 1;
+            letterElement.classList.add(`letter-color-${initialRandomColorNum}`);
+            
+            // Set an interval to change the font randomly
             animationIntervals[index] = setInterval(() => {
-                const randomChar = possibleLetters.charAt(Math.floor(Math.random() * possibleLetters.length));
+                // Select a random font
+                const newFont = fontOptions[Math.floor(Math.random() * fontOptions.length)];
                 
-                // Measure the width of the new character
-                measureDiv.textContent = randomChar;
-                const charWidth = measureDiv.offsetWidth;
+                // Measure the width of the current letter with the new font
+                measureDiv.style.fontFamily = newFont;
+                measureDiv.textContent = currentLetter;
+                const newWidth = measureDiv.offsetWidth;
                 
-                // Update the letter with the new character
-                letterElement.textContent = randomChar;
+                // Apply the new font to the letter
+                letterElement.style.fontFamily = newFont;
                 
-                // Adjust the element's width to accommodate the new character
-                letterElement.style.width = `${charWidth}px`;
+                // Adjust the element's width to accommodate the new font
+                letterElement.style.width = `${newWidth}px`;
                 
                 // Add a subtle transition effect
                 letterElement.style.transform = 'translateY(-5px)';
@@ -112,74 +160,51 @@ document.addEventListener('DOMContentLoaded', () => {
                     letterElement.style.transform = 'translateY(0)';
                 }, 100);
                 
+                // Change color every time the font changes
+                // Add the new color class BEFORE removing the old ones
+                const randomColorNum = Math.floor(Math.random() * 30) + 1;
+                letterElement.classList.add(`letter-color-${randomColorNum}`);
+                
+                // Then remove any other color classes
+                for (let i = 1; i <= 30; i++) {
+                    if (i !== randomColorNum) {
+                        letterElement.classList.remove(`letter-color-${i}`);
+                    }
+                }
+                
             }, 150); // Change every 150ms for a rapid but visible effect
         }
         
         function stopLetterAnimation(letterElement, index, originalChar) {
-            // Don't immediately clear the animation interval
-            // Instead, create an ease-out effect by slowing down the animation
+            // Clear the animation interval
+            if (animationIntervals[index]) {
+                clearInterval(animationIntervals[index]);
+                animationIntervals[index] = null;
+            }
             
-            let slowdownCounter = 0;
-            const maxSlowdowns = 2 + Math.floor(Math.random()); // 2-3 slowdowns
-            const slowdownInterval = setInterval(() => {
-                slowdownCounter++;
+            // Add a bounce effect when settling
+            letterElement.animate([
+                { transform: 'translateY(-5px)' },
+                { transform: 'translateY(0)' }
+            ], {
+                duration: 200,
+                easing: 'ease-in-out'
+            });
+            
+            // Reset the letter after animation completes
+            setTimeout(() => {
+                // Reset the letter
+                letterElement.textContent = originalChar;
+                letterElement.style.fontFamily = '';
+                letterElement.style.width = '';
+                letterElement.style.transform = '';
+                letterElement.classList.remove('title-letter-animating');
                 
-                if (slowdownCounter >= maxSlowdowns) {
-                    // After 2-3 slowdowns, stop the animation completely
-                    clearInterval(slowdownInterval);
-                    
-                    // Now clear the original animation interval
-                    if (animationIntervals[index]) {
-                        clearInterval(animationIntervals[index]);
-                        animationIntervals[index] = null;
-                    }
-                    
-                    // Reset to original letter with a transition
-                    letterElement.style.transform = 'translateY(0)';
-                    letterElement.textContent = originalChar;
-                    
-                    // Restore original width
-                    letterElement.style.width = `${originalWidths[index]}px`;
-                    
-                    // Remove the animating class after transition completes
-                    setTimeout(() => {
-                        letterElement.classList.remove('title-letter-animating');
-                        letterElement.style.width = '';
-                    }, 400);
-                } else {
-                    // For each slowdown, increase the interval time
-                    if (animationIntervals[index]) {
-                        // Clear the existing interval
-                        clearInterval(animationIntervals[index]);
-                        
-                        // Create a new interval with longer duration - doubled the values
-                        const slowedInterval = 300 + (slowdownCounter * 300); // 600ms, 900ms
-                        
-                        // Set an interval to change the letter randomly but slower
-                        animationIntervals[index] = setInterval(() => {
-                            const randomChar = possibleLetters.charAt(Math.floor(Math.random() * possibleLetters.length));
-                            
-                            // Measure the width of the new character
-                            measureDiv.textContent = randomChar;
-                            const charWidth = measureDiv.offsetWidth;
-                            
-                            // Update the letter with the new character
-                            letterElement.textContent = randomChar;
-                            
-                            // Adjust the element's width to accommodate the new character
-                            letterElement.style.width = `${charWidth}px`;
-                            
-                            // Reduce the movement as we slow down
-                            const moveAmount = 5 - (slowdownCounter * 1.5);
-                            letterElement.style.transform = `translateY(-${moveAmount}px)`;
-                            setTimeout(() => {
-                                letterElement.style.transform = 'translateY(0)';
-                            }, 100);
-                            
-                        }, slowedInterval);
-                    }
+                // Remove all color classes
+                for (let i = 1; i <= 30; i++) {
+                    letterElement.classList.remove(`letter-color-${i}`);
                 }
-            }, 400); // Check for slowdown every 400ms (doubled from 200ms)
+            }, 200);
         }
         
         // Clean up on page unload
@@ -204,18 +229,71 @@ document.addEventListener('DOMContentLoaded', () => {
         window.titleLetters = titleLetters;
         window.originalLetters = originalLetters;
         window.possibleLetters = possibleLetters;
+        window.fontOptions = fontOptions;
     }
 
     // Startup title animation that plays when the page loads
     function startupTitleAnimation() {
         const titleLetters = document.querySelectorAll('.title-letter');
         const originalLetters = Array.from(titleLetters).map(el => el.textContent);
-        const possibleLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?';
+        const originalFont = window.getComputedStyle(titleLetters[0]).fontFamily;
+        const fontOptions = [
+            // Original 15 fonts
+            "'Montserrat', sans-serif",
+            "'Arial Black', sans-serif",
+            "'Impact', sans-serif",
+            "'Verdana', sans-serif",
+            "'Georgia', serif",
+            "'Courier New', monospace",
+            "'Trebuchet MS', sans-serif",
+            "'Palatino Linotype', serif",
+            "'Lucida Console', monospace",
+            "'Tahoma', sans-serif",
+            "'Segoe UI', sans-serif",
+            "'Times New Roman', serif",
+            "'Century Gothic', sans-serif",
+            "'Copperplate', fantasy",
+            "'Helvetica', sans-serif",
+            
+            // 15 more wacky/decorative fonts
+            "'Comic Sans MS', cursive",
+            "'Brush Script MT', cursive",
+            "'Papyrus', fantasy",
+            "'Chiller', fantasy",
+            "'Jokerman', fantasy",
+            "'Stencil', fantasy",
+            "'Broadway', fantasy",
+            "'Ravie', fantasy",
+            "'Showcard Gothic', fantasy",
+            "'Harrington', fantasy",
+            "'Curlz MT', cursive",
+            "'Lucida Handwriting', cursive",
+            "'Kristen ITC', cursive",
+            "'Freestyle Script', cursive",
+            "'Gigi', fantasy"
+        ];
         let animating = true;
+        
+        // Create a measurement div for calculating widths with different fonts
+        const measureDiv = document.createElement('div');
+        measureDiv.style.cssText = `
+            position: absolute;
+            visibility: hidden;
+            height: auto;
+            width: auto;
+            white-space: nowrap;
+            font-size: ${window.getComputedStyle(titleLetters[0]).fontSize};
+            font-weight: ${window.getComputedStyle(titleLetters[0]).fontWeight};
+        `;
+        document.body.appendChild(measureDiv);
         
         // Start with all letters animating
         titleLetters.forEach((letter, index) => {
             letter.classList.add('title-letter-animating');
+            
+            // Add an initial random color to prevent flicker
+            const initialRandomColorNum = Math.floor(Math.random() * 30) + 1;
+            letter.classList.add(`letter-color-${initialRandomColorNum}`);
             
             // Set an interval for each letter
             const interval = setInterval(() => {
@@ -224,14 +302,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 
-                const randomChar = possibleLetters.charAt(Math.floor(Math.random() * possibleLetters.length));
-                letter.textContent = randomChar;
+                // Select a random font
+                const newFont = fontOptions[Math.floor(Math.random() * fontOptions.length)];
+                
+                // Measure the width with the new font
+                measureDiv.style.fontFamily = newFont;
+                measureDiv.textContent = originalLetters[index];
+                const newWidth = measureDiv.offsetWidth;
+                
+                // Apply the new font
+                letter.style.fontFamily = newFont;
+                letter.style.width = `${newWidth}px`;
                 
                 // Add a subtle movement
                 letter.style.transform = 'translateY(-3px)';
                 setTimeout(() => {
                     letter.style.transform = 'translateY(0)';
                 }, 50);
+                
+                // Change color with every font change
+                // Add new color before removing old ones
+                const randomColorNum = Math.floor(Math.random() * 30) + 1;
+                letter.classList.add(`letter-color-${randomColorNum}`);
+                
+                // Then remove any other color classes
+                for (let i = 1; i <= 30; i++) {
+                    if (i !== randomColorNum) {
+                        letter.classList.remove(`letter-color-${i}`);
+                    }
+                }
+                
             }, 100); // Fast animation
             
             // Store the interval for later cleanup
@@ -249,10 +349,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.animationIntervals[index] = null;
                 }
                 
-                // Transition to final letter
-                letter.style.transform = 'translateY(0)';
-                letter.textContent = originalLetters[index];
-                
                 // Add a little bounce effect when settling
                 letter.animate([
                     { transform: 'translateY(-10px)' },
@@ -262,9 +358,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
                 });
                 
-                // Remove the animating class after transition
+                // Transition to final state and remove classes after animation completes
                 setTimeout(() => {
+                    letter.style.transform = 'translateY(0)';
+                    letter.style.fontFamily = originalFont;
                     letter.classList.remove('title-letter-animating');
+                    letter.style.width = '';
+                    
+                    // Remove color classes at the very end
+                    for (let i = 1; i <= 30; i++) {
+                        letter.classList.remove(`letter-color-${i}`);
+                    }
                 }, 300);
                 
             }, stopTime);
@@ -274,19 +378,33 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             animating = false;
             
-            // Make sure all letters are in their final state
-            titleLetters.forEach((letter, index) => {
-                letter.textContent = originalLetters[index];
-                letter.classList.remove('title-letter-animating');
-            });
-            
-            // Clear any remaining intervals
-            Object.keys(window.animationIntervals).forEach(key => {
-                if (window.animationIntervals[key]) {
-                    clearInterval(window.animationIntervals[key]);
-                    window.animationIntervals[key] = null;
+            // Wait a tiny bit for any ongoing animations to settle
+            setTimeout(() => {
+                // Make sure all letters are in their final state
+                titleLetters.forEach((letter, index) => {
+                    letter.style.fontFamily = originalFont;
+                    letter.classList.remove('title-letter-animating');
+                    letter.style.width = '';
+                    
+                    // Remove any color classes
+                    for (let i = 1; i <= 30; i++) {
+                        letter.classList.remove(`letter-color-${i}`);
+                    }
+                });
+                
+                // Clean up measurement div
+                if (measureDiv && measureDiv.parentNode) {
+                    measureDiv.parentNode.removeChild(measureDiv);
                 }
-            });
+                
+                // Clear any remaining intervals
+                Object.keys(window.animationIntervals).forEach(key => {
+                    if (window.animationIntervals[key]) {
+                        clearInterval(window.animationIntervals[key]);
+                        window.animationIntervals[key] = null;
+                    }
+                });
+            }, 100);
         }, 4500);
     }
 

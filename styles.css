@@ -12,6 +12,40 @@
     --success-color: #4caf50;
     --border-color: #333333;
     --button-hover: #2a2a2a;
+    
+    /* Bright pastel colors */
+    --pastel-pink: #ffb6c1;
+    --pastel-blue: #a7d8ff;
+    --pastel-green: #b4f8c8;
+    --pastel-yellow: #ffef9e;
+    --pastel-purple: #d9b8ff;
+    --pastel-orange: #ffceab;
+    --pastel-teal: #a0e7e5;
+    --pastel-red: #ffafaf;
+    --pastel-mint: #c3f7d0;
+    --pastel-lavender: #e5d0fb;
+    
+    /* 20 Additional colors including darker options */
+    --neon-green: #39ff14;
+    --coral: #ff7f50;
+    --sky-blue: #87ceeb;
+    --hot-pink: #ff69b4;
+    --aqua: #00ffff;
+    --lime: #32cd32;
+    --crimson: #dc143c;
+    --royal-blue: #4169e1;
+    --golden: #ffd700;
+    --turquoise: #40e0d0;
+    --deep-purple: #663399;
+    --dark-teal: #008080;
+    --wine-red: #722f37;
+    --forest-green: #228b22;
+    --midnight-blue: #191970;
+    --amber: #ffbf00;
+    --ruby: #e0115f;
+    --emerald: #046307;
+    --slate-blue: #6a5acd;
+    --chocolate: #7b3f00;
 }
 
 * {
@@ -87,20 +121,49 @@ header h1 {
 
 .title-letter:hover {
     transform: translateY(-10px);
-    color: transparent;
-    background-image: linear-gradient(90deg,
-        #FFFFFF, #C0C0C0, #888888, #555555,
-        #222222, #000000, #444444, #A0A0A0);
-    background-size: 400% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: gradient-shift 5s linear infinite;
+    background-image: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    animation: none !important;
+    transition: transform 0.3s ease;
 }
 
 .title-letter-animating {
     animation: none;
     transition: transform 0.1s ease-in-out, width 0.2s ease;
 }
+
+/* Individual letter color classes */
+.letter-color-1 { color: var(--pastel-pink) !important; -webkit-text-fill-color: var(--pastel-pink) !important; }
+.letter-color-2 { color: var(--pastel-blue) !important; -webkit-text-fill-color: var(--pastel-blue) !important; }
+.letter-color-3 { color: var(--pastel-green) !important; -webkit-text-fill-color: var(--pastel-green) !important; }
+.letter-color-4 { color: var(--pastel-yellow) !important; -webkit-text-fill-color: var(--pastel-yellow) !important; }
+.letter-color-5 { color: var(--pastel-purple) !important; -webkit-text-fill-color: var(--pastel-purple) !important; }
+.letter-color-6 { color: var(--pastel-orange) !important; -webkit-text-fill-color: var(--pastel-orange) !important; }
+.letter-color-7 { color: var(--pastel-teal) !important; -webkit-text-fill-color: var(--pastel-teal) !important; }
+.letter-color-8 { color: var(--pastel-red) !important; -webkit-text-fill-color: var(--pastel-red) !important; }
+.letter-color-9 { color: var(--pastel-mint) !important; -webkit-text-fill-color: var(--pastel-mint) !important; }
+.letter-color-10 { color: var(--pastel-lavender) !important; -webkit-text-fill-color: var(--pastel-lavender) !important; }
+.letter-color-11 { color: var(--neon-green) !important; -webkit-text-fill-color: var(--neon-green) !important; }
+.letter-color-12 { color: var(--coral) !important; -webkit-text-fill-color: var(--coral) !important; }
+.letter-color-13 { color: var(--sky-blue) !important; -webkit-text-fill-color: var(--sky-blue) !important; }
+.letter-color-14 { color: var(--hot-pink) !important; -webkit-text-fill-color: var(--hot-pink) !important; }
+.letter-color-15 { color: var(--aqua) !important; -webkit-text-fill-color: var(--aqua) !important; }
+.letter-color-16 { color: var(--lime) !important; -webkit-text-fill-color: var(--lime) !important; }
+.letter-color-17 { color: var(--crimson) !important; -webkit-text-fill-color: var(--crimson) !important; }
+.letter-color-18 { color: var(--royal-blue) !important; -webkit-text-fill-color: var(--royal-blue) !important; }
+.letter-color-19 { color: var(--golden) !important; -webkit-text-fill-color: var(--golden) !important; }
+.letter-color-20 { color: var(--turquoise) !important; -webkit-text-fill-color: var(--turquoise) !important; }
+.letter-color-21 { color: var(--deep-purple) !important; -webkit-text-fill-color: var(--deep-purple) !important; }
+.letter-color-22 { color: var(--dark-teal) !important; -webkit-text-fill-color: var(--dark-teal) !important; }
+.letter-color-23 { color: var(--wine-red) !important; -webkit-text-fill-color: var(--wine-red) !important; }
+.letter-color-24 { color: var(--forest-green) !important; -webkit-text-fill-color: var(--forest-green) !important; }
+.letter-color-25 { color: var(--midnight-blue) !important; -webkit-text-fill-color: var(--midnight-blue) !important; }
+.letter-color-26 { color: var(--amber) !important; -webkit-text-fill-color: var(--amber) !important; }
+.letter-color-27 { color: var(--ruby) !important; -webkit-text-fill-color: var(--ruby) !important; }
+.letter-color-28 { color: var(--emerald) !important; -webkit-text-fill-color: var(--emerald) !important; }
+.letter-color-29 { color: var(--slate-blue) !important; -webkit-text-fill-color: var(--slate-blue) !important; }
+.letter-color-30 { color: var(--chocolate) !important; -webkit-text-fill-color: var(--chocolate) !important; }
 
 .animated-gradient {
     background-image: linear-gradient(90deg, 
