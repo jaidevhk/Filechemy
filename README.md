@@ -1,14 +1,22 @@
-# Image Format Converter
+# Image & Video Common Format Converter 
 
 A clean, minimal, modern web-based tool for converting images between different formats. This tool works entirely in your browser - no server uploads required!
 
 ## Supported Formats
 
+Image Formats
 - PNG
 - JPG
 - WEBP
 - GIF
 - BMP
+
+Video Formats
+- MP4
+- MOV
+- AVI
+- WEBP
+  
 
 ## Features
 
@@ -44,7 +52,7 @@ Works in all modern browsers that support HTML5 Canvas:
 
 ## Limitations
 
-- Some conversions may result in quality loss depending on the source and target formats
-- Very large images may cause browser performance issues
-- GIF animations will be converted to static images
-- Some browser-specific limitations may apply to certain format conversions 
+- Some conversions may result in quality loss depending on the source and target formats (UPDATE Coming Soon)
+- Very large images may cause browser performance issues (UNTESTED)
+- GIF animations will be converted to static images (FIX WIP)
+- Some browser-specific limitations may apply to certain format conversions (UNTESTED)
