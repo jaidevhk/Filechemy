@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filechemy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖼️</text></svg>">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/0.10.0/ffmpeg.min.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="animated-title">
+                <span class="title-letter">F</span>
+                <span class="title-letter">I</span>
+                <span class="title-letter">L</span>
+                <span class="title-letter">E</span>
+                <span class="title-letter">C</span>
+                <span class="title-letter">H</span>
+                <span class="title-letter">E</span>
+                <span class="title-letter">M</span>
+                <span class="title-letter">Y</span>
+            </h1>
+            <p>Convert Common Files</p>
+        </header>
+        
+        <main>
+            <div class="converter-container">
+                <div class="bento-grid">
+                    <div class="bento-cell images-cell">
+                        <div class="cell-header">
+                            <h3>Images</h3>
+                        </div>
+                        <!-- Image Upload Area -->
+                        <div class="upload-section">
+                            <div class="upload-area" id="imageDropArea">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-4h2v-4h3l-4-4-4 4h3v4z" fill="currentColor"/></svg>
+                                <p>Drag & drop your images here or <label for="imageInput" class="browse-label">browse</label></p>
+                                <small class="drag-tip">Supports PNG, JPG, WEBP, GIF, BMP</small>
+                                <input type="file" id="imageInput" accept="image/*" multiple hidden>
+                            </div>
+                            
+                            <!-- Image Queue -->
+                            <div class="batch-queue" id="imageQueue" style="display: none;">
+                                <div class="queue-header">
+                                    <h3>Image Queue <span id="imageQueueCount">(0)</span></h3>
+                                    <div class="queue-actions">
+                                        <button id="addMoreImagesBtn" class="secondary-btn">Add More</button>
+                                        <button id="clearImageQueueBtn" class="secondary-btn">Clear</button>
+                                    </div>
+                                </div>
+                                <div class="queue-list" id="imageQueueList"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Conversion Options -->
+                        <div class="conversion-options" id="imageConversionOptions" style="display: none;">
+                            <div class="format-selection">
+                                <h3>Image Output Format(s):</h3>
+                                <p class="format-help">Choose formats to convert your images to</p>
+                                <div id="imageFormatOptions" class="format-options">
+                                    <button class="format-toggle" data-format="png">PNG</button>
+                                    <button class="format-toggle" data-format="jpg">JPG</button>
+                                    <button class="format-toggle" data-format="webp">WEBP</button>
+                                    <button class="format-toggle" data-format="gif">GIF</button>
+                                    <button class="format-toggle" data-format="bmp">BMP</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bento-cell videos-cell">
+                        <div class="cell-header">
+                            <h3>Videos</h3>
+                        </div>
+                        <!-- Video Upload Area -->
+                        <div class="upload-section">
+                            <div class="upload-area" id="videoDropArea">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><path d="M16 3.5c2.143 0 3 1.5 3 3v3c0 .153-.07.303-.186.412l-.066.055L16 11.964V12.5c0 .286-.107.55-.293.707l-.073.058a.89.89 0 0 1-.134.09V16.5c0 1.933-1.567 3.5-3.5 3.5h-6A3.499 3.499 0 0 1 2.5 16.5v-11A3.499 3.499 0 0 1 6 2h10Zm-5 0H6a1.5 1.5 0 0 0-1.5 1.5v11A1.5 1.5 0 0 0 6 17.5h6a1.5 1.5 0 0 0 1.5-1.5V4.5c0-.563-.186-1-.5-1Zm5 2c-.414 0-.608.294-.708.457L14.434 8 17 8.001V6.5c0-.5-.086-1-1-1ZM8.5 12a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm.5-5.5a.5.5 0 0 1 .09.992L9 7.5H7.5v1.505a.5.5 0 0 1-.992.09L6.5 9V7.5H5a.5.5 0 0 1-.09-.992L5 6.5h1.5V4.995a.5.5 0 0 1 .992-.09L7.5 5v1.5H9Z" fill="currentColor"/></svg>
+                                <p>Drag & drop your videos here or <label for="videoInput" class="browse-label">browse</label></p>
+                                <small class="drag-tip">Supports MP4, WEBM, MOV, AVI, MKV</small>
+                                <input type="file" id="videoInput" accept="video/*" multiple hidden>
+                            </div>
+                            
+                            <!-- Video Queue -->
+                            <div class="batch-queue" id="videoQueue" style="display: none;">
+                                <div class="queue-header">
+                                    <h3>Video Queue <span id="videoQueueCount">(0)</span></h3>
+                                    <div class="queue-actions">
+                                        <button id="addMoreVideosBtn" class="secondary-btn">Add More</button>
+                                        <button id="clearVideoQueueBtn" class="secondary-btn">Clear</button>
+                                    </div>
+                                </div>
+                                <div class="queue-list" id="videoQueueList"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Conversion Options -->
+                        <div class="conversion-options" id="videoConversionOptions" style="display: none;">
+                            <div class="format-selection">
+                                <h3>Video Output Format(s):</h3>
+                                <p class="format-help">Choose formats to convert your videos to</p>
+                                <div id="videoFormatOptions" class="format-options">
+                                    <button class="format-toggle" data-format="mp4">MP4</button>
+                                    <button class="format-toggle" data-format="webm">WEBM</button>
+                                    <button class="format-toggle" data-format="mov">MOV</button>
+                                    <button class="format-toggle" data-format="avi">AVI</button>
+                                    <button class="format-toggle" data-format="mkv">MKV</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="conversion-actions" id="conversionActions" style="display: none;">
+                    <button id="convertBtn" class="primary-btn" disabled>Convert Selected Files</button>
+                </div>
+                
+                <!-- Results Container (shown after conversion) -->
+                <div class="result-container" id="resultContainer" style="display: none;">
+                    <h3>Conversion Complete!</h3>
+                    
+                    <!-- Format-specific result tabs -->
+                    <div class="result-tabs" id="resultTabs"></div>
+                    
+                    <!-- Results content for each format -->
+                    <div class="result-content" id="resultContent"></div>
+                    
+                    <div class="result-actions">
+                        <button id="downloadAllBtn" class="primary-btn">Download All</button>
+                        <button id="newConversionBtn" class="secondary-btn">New Conversion</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Created with ❤️ - Convert files instantly without server uploads</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html> 

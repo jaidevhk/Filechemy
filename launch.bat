@@ -1,0 +1,3 @@
+@echo off
+echo Opening Image Format Converter...
+start index.html 
